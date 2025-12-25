@@ -1,5 +1,4 @@
 import catchAsyncErrors from '../middleware/catchAsyncErrors.js';
-import { pendingTransactions } from '../blockchain/pending.js';
 import { Block } from '../models/Block.js';
 
 import { User } from '../models/User.js';

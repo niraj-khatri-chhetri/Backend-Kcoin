@@ -17,6 +17,7 @@ import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import blockChainRoutes from './routes/blockchainRoutes.js';
 import walletRoutes from './routes/walletRoutes.js';
+import statRoutes from './routes/statRoutes.js';
 
 import { createGenesisBlock } from './blockchain/genesis.js';
 
@@ -67,6 +68,7 @@ app.use(authRoutes);
 app.use(transactionRoutes);
 app.use(blockChainRoutes);
 app.use(walletRoutes);
+app.use(statRoutes);
 
 //Global Error handling middleware
 app.use((error, req, res, next) => {

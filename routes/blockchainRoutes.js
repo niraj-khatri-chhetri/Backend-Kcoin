@@ -1,7 +1,5 @@
 import express from 'express';
 import { isAuthenticatedUser } from '../middleware/auth.js';
-import { mineBlock } from '../blockchain/blockchain.js';
-import { Block } from '../models/Block.js';
 
 import {
   fetchBlockchain,

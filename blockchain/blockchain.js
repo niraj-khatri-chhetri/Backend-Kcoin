@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 import { Block } from '../models/Block.js';
-import { pendingTransactions } from './pending.js';
 
 import { PendingTransaction } from '../models/PendingTransaction.js';
 
@@ -16,23 +15,15 @@ function calculateHash(index, timestamp, transactions, previousHash, nonce) {
 }
 
 export async function mineBlock(minerAddress) {
-  console.log('🚀 MINING STARTED BY THIS WALLET ADDRESS', minerAddress);
-
   const pendingTransactions = await PendingTransaction.find().sort({
     timestamp: 1,
   });
-  console.log('🚀 ~ mineBlock ~ pendingTransactions:', pendingTransactions);
 
   if (pendingTransactions.length === 0) {
     throw new Error('No pending transactions to include in the block');
   }
 
-  return;
-
-  const lastBlock = await Block.findOne().sort({ index: -1 });
-
-  const index = lastBlock ? lastBlock.index + 1 : 0;
-  const previousHash = lastBlock ? lastBlock.hash : '0';
+  //Coinbase transaction to reward the miner
 
   const rewardTx = {
     senderAddress: '00',
@@ -41,7 +32,20 @@ export async function mineBlock(minerAddress) {
     timestamp: Date.now(),
   };
 
-  const transactions = [...pendingTransactions, rewardTx];
+  const transactions = [
+    ...pendingTransactions.map((tx) => ({
+      senderAddress: tx.senderAddress,
+      recipientAddress: tx.recipientAddress,
+      amount: tx.amount,
+      timestamp: tx.timestamp,
+    })),
+    rewardTx,
+  ];
+
+  const lastBlock = await Block.findOne().sort({ index: -1 });
+
+  const index = lastBlock ? lastBlock.index + 1 : 0;
+  const previousHash = lastBlock ? lastBlock.hash : '0';
 
   let nonce = 0;
   let hash = '';
@@ -51,7 +55,7 @@ export async function mineBlock(minerAddress) {
     hash = calculateHash(index, Date.now(), transactions, previousHash, nonce);
   } while (!hash.startsWith(DIFFICULTY));
 
-  const block = await Block.create({
+  const newBlock = await Block.create({
     index,
     timestamp: Date.now(),
     transactions,
@@ -61,8 +65,8 @@ export async function mineBlock(minerAddress) {
   });
 
   //clear pending transactions pool
-  pendingTransactions.length = 0;
+  await PendingTransaction.deleteMany({});
 
   //return a NEWLY MINED BLOCK
-  return block;
+  return newBlock;
 }
