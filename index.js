@@ -27,7 +27,11 @@ import Counter from './models/counter.js';
 const app = express();
 
 // ALLOWED DOMAINS LIST
-var allowedDomains = ['http://localhost:5173', 'http://localhost:5174'];
+var allowedDomains = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'https://frontend-kcoin.vercel.app',
+];
 
 // CROSS-ORIGIN RESOURCE SHARING (CORS)
 app.use(
