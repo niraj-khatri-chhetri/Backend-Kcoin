@@ -4,7 +4,11 @@ import { mineBlock } from '../blockchain/blockchain.js';
 
 export const fetchBlockchain = catchAsyncErrors(async (req, res, next) => {
   const chain = await Block.find().sort({ index: 1 });
-  res.json(chain);
+  res.status(200).json({
+    success: true,
+    message: 'Blockchain fetched successfully',
+    chain,
+  });
 });
 
 export const mineNewBlock = catchAsyncErrors(async (req, res) => {

@@ -56,6 +56,43 @@ export const createTransaction = catchAsyncErrors(async (req, res, next) => {
     .json({ message: 'Transaction added to pending pool', success: true });
 });
 
+// export const fetchAllTransactions = catchAsyncErrors(async (req, res, next) => {
+//   //Fetch transactions field
+
+//   const blocks = await Block.find({}, { transactions: 1, _id: 0, index: 1 });
+//   console.log('🚀 ~ blocks:', blocks);
+
+//   // Flatten all transactions from all blocks
+//   const transactions = blocks.flatMap((block) => block.transactions);
+
+//   res.status(200).json({
+//     success: true,
+//     totalTransactions: transactions.length,
+//     transactions,
+//   });
+// });
+
+export const fetchAllTransactions = catchAsyncErrors(async (req, res, next) => {
+  const blocks = await Block.find(
+    {},
+    { transactions: 1, index: 1, hash: 1, _id: 0 }
+  );
+
+  const transactions = blocks.flatMap((block) =>
+    block.transactions.map((tx) => ({
+      ...tx.toObject(),
+      blockIndex: block.index,
+      blockHash: block.hash,
+    }))
+  );
+
+  res.status(200).json({
+    success: true,
+    totalTransactions: transactions.length,
+    transactions,
+  });
+});
+
 export const fetchPendingTransactions = catchAsyncErrors(
   async (req, res, next) => {
     const pending = await PendingTransaction.find().sort({ timestamp: 1 });
