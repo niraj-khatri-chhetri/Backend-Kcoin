@@ -24,7 +24,6 @@ export async function mineBlock(minerAddress) {
   }
 
   //Coinbase transaction to reward the miner
-
   const rewardTx = {
     senderAddress: '00',
     recipientAddress: minerAddress,

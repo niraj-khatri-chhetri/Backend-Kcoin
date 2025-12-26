@@ -4,6 +4,7 @@ import { Block } from '../models/Block.js';
 import { User } from '../models/User.js';
 
 import { PendingTransaction } from '../models/PendingTransaction.js';
+import { getBalance } from '../blockchain/getBalance.js';
 
 export const createTransaction = catchAsyncErrors(async (req, res, next) => {
   const { recipientAddress, amount } = req.body;
@@ -20,22 +21,24 @@ export const createTransaction = catchAsyncErrors(async (req, res, next) => {
     });
   }
 
-  const blocks = await Block.find();
-
-  let balance = 0;
-
   //Iterating through the blockchain to calculate the sender's balance
-  blocks.forEach((block) => {
-    block.transactions.forEach((transaction) => {
-      if (transaction.senderAddress === sender) {
-        balance -= transaction.amount;
-      }
+  // const blocks = await Block.find();
 
-      if (transaction.recipientAddress === sender) {
-        balance += transaction.amount;
-      }
-    });
-  });
+  // let balance = 0;
+
+  // blocks.forEach((block) => {
+  //   block.transactions.forEach((transaction) => {
+  //     if (transaction.senderAddress === sender) {
+  //       balance -= transaction.amount;
+  //     }
+
+  //     if (transaction.recipientAddress === sender) {
+  //       balance += transaction.amount;
+  //     }
+  //   });
+  // });
+
+  const balance = await getBalance(sender);
 
   if (balance < amount) {
     return res.status(400).json({
