@@ -30,7 +30,9 @@ export const fetchBlock = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const mineNewBlock = catchAsyncErrors(async (req, res) => {
-  const minerAddress = req.user.walletAddress;
+  console.log('🚀 ~ req.user:', req?.user);
+  const minerAddress = req?.user?.walletAddress;
+  console.log('🚀 ~ minerAddress:', minerAddress);
 
   const pendingTxs = await PendingTransaction.find();
   const lastBlock = await Block.findOne().sort({ index: -1 });
