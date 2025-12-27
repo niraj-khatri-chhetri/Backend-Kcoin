@@ -19,8 +19,6 @@ import blockChainRoutes from './routes/blockchainRoutes.js';
 import walletRoutes from './routes/walletRoutes.js';
 import statRoutes from './routes/statRoutes.js';
 
-import { createGenesisBlock } from './blockchain/genesis.js';
-
 //models
 import Counter from './models/counter.js';
 
@@ -99,8 +97,6 @@ mongoose
       { upsert: true }
     );
     console.log('Category counter initialized (if not already set).');
-
-    await createGenesisBlock();
   })
   .catch((err) => console.log('DB CONNECTION ERROR: ', err));
 

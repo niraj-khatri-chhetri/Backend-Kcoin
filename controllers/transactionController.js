@@ -21,23 +21,6 @@ export const createTransaction = catchAsyncErrors(async (req, res, next) => {
     });
   }
 
-  //Iterating through the blockchain to calculate the sender's balance
-  // const blocks = await Block.find();
-
-  // let balance = 0;
-
-  // blocks.forEach((block) => {
-  //   block.transactions.forEach((transaction) => {
-  //     if (transaction.senderAddress === sender) {
-  //       balance -= transaction.amount;
-  //     }
-
-  //     if (transaction.recipientAddress === sender) {
-  //       balance += transaction.amount;
-  //     }
-  //   });
-  // });
-
   const balance = await getBalance(sender);
 
   if (balance < amount) {
@@ -58,22 +41,6 @@ export const createTransaction = catchAsyncErrors(async (req, res, next) => {
     .status(200)
     .json({ message: 'Transaction added to pending pool', success: true });
 });
-
-// export const fetchAllTransactions = catchAsyncErrors(async (req, res, next) => {
-//   //Fetch transactions field
-
-//   const blocks = await Block.find({}, { transactions: 1, _id: 0, index: 1 });
-//   console.log('🚀 ~ blocks:', blocks);
-
-//   // Flatten all transactions from all blocks
-//   const transactions = blocks.flatMap((block) => block.transactions);
-
-//   res.status(200).json({
-//     success: true,
-//     totalTransactions: transactions.length,
-//     transactions,
-//   });
-// });
 
 export const fetchAllTransactions = catchAsyncErrors(async (req, res, next) => {
   const blocks = await Block.find(
