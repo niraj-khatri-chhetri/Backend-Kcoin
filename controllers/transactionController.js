@@ -4,13 +4,15 @@ import { Block } from '../models/Block.js';
 import { User } from '../models/User.js';
 
 import { PendingTransaction } from '../models/PendingTransaction.js';
-import { getBalance } from '../blockchain/getBalance.js';
+import {
+  calculatePendingOutgoing,
+  getBalance,
+} from '../blockchain/getBalance.js';
 
 export const createTransaction = catchAsyncErrors(async (req, res, next) => {
   const { recipientAddress, amount } = req.body;
   const sender = req.user.walletAddress;
 
-  //check if recipient exists
   const recipientExists = await User.findOne({
     walletAddress: recipientAddress,
   });
@@ -21,7 +23,8 @@ export const createTransaction = catchAsyncErrors(async (req, res, next) => {
     });
   }
 
-  const balance = await getBalance(sender);
+  const balance =
+    (await getBalance(sender)) - (await calculatePendingOutgoing(sender));
 
   if (balance < amount) {
     return res.status(400).json({

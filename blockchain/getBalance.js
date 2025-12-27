@@ -1,4 +1,5 @@
 import { Block } from '../models/Block.js';
+import { PendingTransaction } from '../models/PendingTransaction.js';
 
 export const getBalance = async (walletAddress) => {
   let balance = 0;
@@ -13,6 +14,18 @@ export const getBalance = async (walletAddress) => {
         return (balance -= transaction.amount);
     });
   });
+
+  console.log('🚀 REAL BALANCE', balance);
+
+  return balance;
+};
+
+//From pending lists
+export const calculatePendingOutgoing = async (senderAddress) => {
+  const pendingTxs = await PendingTransaction.find({ senderAddress });
+
+  let balance = pendingTxs.reduce((sum, tx) => sum + tx.amount, 0);
+  console.log('🚀 PENDING BALANCE', balance);
 
   return balance;
 };
