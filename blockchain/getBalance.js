@@ -15,8 +15,6 @@ export const getBalance = async (walletAddress) => {
     });
   });
 
-  console.log('🚀 REAL BALANCE', balance);
-
   return balance;
 };
 
@@ -25,7 +23,6 @@ export const calculatePendingOutgoing = async (senderAddress) => {
   const pendingTxs = await PendingTransaction.find({ senderAddress });
 
   let balance = pendingTxs.reduce((sum, tx) => sum + tx.amount, 0);
-  console.log('🚀 PENDING BALANCE', balance);
 
   return balance;
 };
